@@ -1,26 +1,22 @@
-const express = require('express');
+const express =require('express')
 const app = express();
-import {NFTStorage,File} from 'nft.storage'
-const client = new NFTStorage({ token: 'API_TOKEN' })
-const PORT = 8000;
+const routesUrls = require('./routes/routers')
+const cors = require('cors');
 
-app.get('/',(req,res)=>{
-    res.send("fuck you")
-})
-
-app.get('/uploadToipfs',async(req,res)=>{
-    const metadata = await client.store({
-        name: 'Pinpie',
-        description: 'Pin is not delicious beef!',
-        image: new File(
-          [
-            /* data */
-          ],
-          'pinpie.jpg',
-          { type: 'image/jpg' }
-        ),
-      })
-      console.log(metadata.url)
-})
-
-app.listen(PORT)
+var multer = require('multer');
+var upload = multer();
+app.use(express.json());
+// for parsing multipart/form-data
+app.use(upload.array()); 
+app.use(express.static('public'));
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+app.use(cors());
+app.use(express.json())
+app.use('/app', routesUrls)
+app.listen(4000, ()=> console.log("Hello welcome to server"))
+app.get("")
